@@ -1,5 +1,5 @@
-#include <iostream> 
-#include <string> 
+#include <iostream>
+#include <string>
 
 class GenericCreature {
 public:
@@ -7,22 +7,18 @@ public:
         std::cout << "GenericCreature: Constructor called." << std::endl;
     }
 
-    virtual ~GenericCreature() {
+    ~GenericCreature() {
         std::cout << "GenericCreature: Destructor called." << std::endl;
-    }
-
-    void breathe() {
-        std::cout << "GenericCreature: Breathing." << std::endl;
     }
 };
 
-class OceanCreature : virtual public GenericCreature {
+class OceanCreature : public GenericCreature {
 public:
     OceanCreature() {
         std::cout << "OceanCreature: Constructor called." << std::endl;
     }
 
-    virtual ~OceanCreature() {
+    ~OceanCreature() {
         std::cout << "OceanCreature: Destructor called." << std::endl;
     }
 
@@ -46,13 +42,13 @@ public:
     }
 };
 
-class TerrestrialCreature : virtual public GenericCreature {
+class TerrestrialCreature : public GenericCreature {
 public:
     TerrestrialCreature() {
         std::cout << "TerrestrialCreature: Constructor called." << std::endl;
     }
 
-    virtual ~TerrestrialCreature() {
+    ~TerrestrialCreature() {
         std::cout << "TerrestrialCreature: Destructor called." << std::endl;
     }
 
@@ -94,11 +90,9 @@ public:
 int main() {
     std::cout << "Creating a Waterfowl object:" << std::endl;
     Waterfowl duck;
-
-    duck.breathe();
-    duck.walk();
-    duck.fly();
-    duck.swim();
+    duck.walk(); // Из класса Bird (через TerrestrialCreature)
+    duck.fly(); // Из класса Bird
+    duck.swim(); // Из класса OceanCreature
 
     return 0;
 }
