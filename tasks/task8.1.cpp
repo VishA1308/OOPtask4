@@ -42,7 +42,7 @@ public:
     }
 };
 
-class TerrestrialCreature : public GenericCreature {
+class TerrestrialCreature : public Amphibious {
 public:
     TerrestrialCreature() {
         std::cout << "TerrestrialCreature: Constructor called." << std::endl;
@@ -51,10 +51,12 @@ public:
     ~TerrestrialCreature() {
         std::cout << "TerrestrialCreature: Destructor called." << std::endl;
     }
-
+    
     void walk() {
         std::cout << "TerrestrialCreature: Walking." << std::endl;
     }
+private:
+    using Amphibious::swim;
 };
 
 class Bird : public TerrestrialCreature {
@@ -72,7 +74,7 @@ public:
     }
 };
 
-class Waterfowl : public Bird, public OceanCreature {
+class Waterfowl : public Bird {
 public:
     Waterfowl() {
         std::cout << "Waterfowl: Constructor called." << std::endl;
@@ -96,3 +98,4 @@ int main() {
 
     return 0;
 }
+
