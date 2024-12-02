@@ -37,44 +37,19 @@ public:
     }
 
     void Normalize() noexcept {
-        if (seconds < 0) {
-            int minutesToSubtract = (-seconds + 59) / 60;
-            minutes -= minutesToSubtract;
-            seconds += minutesToSubtract * 60;
-            if (seconds < 0) {
-                minutes -= 1;
-                seconds += 60;
-            }
-        }
-
         if (seconds >= 60) {
             minutes += seconds / 60;
             seconds %= 60;
         }
-
-        if (minutes < 0) {
-            int hoursToSubtract = (-minutes + 59) / 60;
-            hours -= hoursToSubtract;
-            minutes += hoursToSubtract * 60;
-            if (minutes < 0) {
-                hours -= 1;
-                minutes += 60;
-            }
-        }
-
         if (minutes >= 60) {
             hours += minutes / 60;
             minutes %= 60;
         }
-
-        if (hours < 0) {
-            hours = 0;
-        }
-
         if (hours >= 24) {
             hours %= 24;
         }
     }
+
     int GetHours() const {
         return hours;
     }
@@ -100,21 +75,15 @@ public:
         seconds = s;
         Normalize();
     }
-    // Дружественный класс SimpleWatch
-    friend class SimpleWatch;
-
-    // Дружественный класс Watch
-    friend class Watch;
-
-    void PrintTime() const {
-        std::cout << "H:" << hours << " M:" << minutes << " S:" << seconds << std::endl;
-    }
+    friend class SimpleWatch; 
 };
 
 class SimpleWatch {
 public:
     void ShowTime(const Time& time) const {
-        time.PrintTime();
+        std::cout << std::setfill('0') << std::setw(2) << time.hours << ":"
+            << std::setfill('0') << std::setw(2) << time.minutes << ":"
+            << std::setfill('0') << std::setw(2) << time.seconds << std::endl;
     }
 
     void SetTime(Time& time, int h, int m, int s) {
@@ -136,43 +105,41 @@ public:
         is24HourFormat = format;
     }
 
-    void ShowTime(const Time& time) const {
+    void ShowTime(Time& time) const {
         if (is24HourFormat) {
             std::cout << std::setfill('0') << std::setw(2) << time.GetHours() << ":"
                 << std::setfill('0') << std::setw(2) << time.GetMinutes() << ":"
-                << std::setfill('0') << std::setw(2) << time.GetSeconds() << " (24-hour format)" << std::endl;
+                << std::setfill('0') << std::setw(2) << time.GetSeconds() << std::endl;
         }
         else {
-            int hour = time.GetHours();
-            std::string period = hour >= 12 ? "PM" : "AM";
-            hour = hour % 12;
-            hour = hour ? hour : 12; // час "0" становится "12"
-            std::cout << hour << ":"
+            int h = time.GetHours() % 12;
+            h = (h == 0) ? 12 : h; // Преобразование 0 в 12
+            std::string period = (time.GetHours() >= 12) ? "PM" : "AM";
+            std::cout << std::setfill('0') << std::setw(2) << h << ":"
                 << std::setfill('0') << std::setw(2) << time.GetMinutes() << ":"
-                << std::setfill('0') << std::setw(2) << time.GetSeconds() << " (" << period << ")" << std::endl;
+                << std::setfill('0') << std::setw(2) << time.GetSeconds() << " " << period << std::endl;
         }
     }
 
     void SetTime(Time& time, int h, int m, int s) {
-        time.hours = h;
-        time.minutes = m;
-        time.seconds = s;
-        time.Normalize();
+        time.SetHours(h);
+        time.SetMinutes(m);
+        time.SetSeconds(s);
     }
 };
 
 int main() {
-    Time t(13, 30, 45); // Создаем объект времени
-    SimpleWatch sw;     // Создаем объект SimpleWatch
-    sw.ShowTime(t);     // Показываем текущее время
+    Time t(10, 30, 45);
+    SimpleWatch sw;
 
-    // Устанавливаем новое время
-    sw.SetTime(t, 9, 15, 30);
-    sw.ShowTime(t);
+    sw.ShowTime(t); // Показывает текущее время
 
-    Watch watch; // Создаем объект Watch
-    watch.SetFormat(false); // Устанавливаем формат 12 часов
-    watch.ShowTime(t);      // Показываем время в формате 12 часов
+    sw.SetTime(t, 12, 45, 30); // Устанавливаем новое время через SimpleWatch
+    sw.ShowTime(t); // Показывает обновленное время
+
+    Watch w;
+    w.SetFormat(false); // Устанавливаем 12-часовой формат
+    w.ShowTime(t); // Показывает время в 12-часовом формате
 
     return 0;
 }
